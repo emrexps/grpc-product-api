@@ -8,8 +8,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import org.hibernate.Session;
-
 import com.emreeker.product.entity.ProductEntity;
 import com.emreeker.product.stub.ProductOuterClass.DeleteProductRequest;
 import com.emreeker.product.stub.ProductOuterClass.DeleteProductResponse;
@@ -32,14 +30,11 @@ public class ProductService extends ProductServiceImplBase {
 		Integer id=request.getProductId();
 		
 		removeFromDatabase(id);
-		// create response
+		
 		DeleteProductResponse.Builder response = DeleteProductResponse.newBuilder();
 		response.setResponseCode(200).setResponsemessage(id+ " Removed from db ");
 		responseObserver.onNext(response.build());
 		responseObserver.onCompleted();
-		
-		
-		
 	}
 
 	
@@ -102,16 +97,16 @@ public class ProductService extends ProductServiceImplBase {
 
 	@Override
 	public void addProduct(ProductRequest request, StreamObserver<ProductResponse> responseObserver) {
-		// get product
+
 		Integer id=request.getProduct().getId();
 		String product_name = request.getProduct().getProductName();
 		Integer price = request.getProduct().getPrice();
 		String description = request.getProduct().getDescription();
 
-		// save product to database
+
 		persistToDb(id,product_name, price, description);
 
-		// create response
+
 		ProductResponse.Builder response = ProductResponse.newBuilder();
 
 		response.setResponseCode(0).setResponsemessage("SUCCESS");
@@ -150,7 +145,6 @@ public class ProductService extends ProductServiceImplBase {
 			em.getTransaction().rollback();
 		}
 		return Collections.emptyList();
-
 	}
 	
 	private void removeFromDatabase(Integer id) {
