@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+option java_package = "com.emreeker.product.stub";
+
+service ProductService{
+    rpc AddProduct(ProductRequest)  returns (ProductResponse);
+    rpc SendManyProduct(stream ManyProductRequest)  returns (ManyProductResponse);
+    rpc SendProductList(EmptyRequest) returns (stream ProductList);
+    rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse);
+}
+
+message Product{
+	int32  id=1;
+	string product_name = 2;
+	int32 price=3;
+	string description=4;
+}
+
+message ProductRequest{
+     Product product=1;
+}
+
+message ProductResponse{
+      string responsemessage = 1;
+      int32  responseCode  = 2;
+}
+
+message EmptyRequest{
+}
+
+message ProductList{
+       Product product=1;
+}
+
+message ManyProductRequest{
+     Product product=1;
+}
+
+message ManyProductResponse{
+      string responsemessage = 1;
+      int32  responseCode  = 2;
+}
+
+message DeleteProductRequest {
+    int32 productId = 1;
+}
+
+message DeleteProductResponse {
+     string responsemessage = 1;
+      int32  responseCode  = 2;
+}
+
+
