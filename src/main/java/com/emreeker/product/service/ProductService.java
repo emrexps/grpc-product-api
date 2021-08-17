@@ -1,4 +1,4 @@
-package com.emreeker.product.server;
+package com.emreeker.product.service;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,28 +28,25 @@ public class ProductService extends ProductServiceImplBase {
 	public void deleteProduct(DeleteProductRequest request, StreamObserver<DeleteProductResponse> responseObserver) {
 		
 		Integer id=request.getProductId();
-		
 		removeFromDatabase(id);
-		
 		DeleteProductResponse.Builder response = DeleteProductResponse.newBuilder();
 		response.setResponseCode(200).setResponsemessage(id+ " Removed from db ");
 		responseObserver.onNext(response.build());
 		responseObserver.onCompleted();
+		
 	}
-
-	
 
 	EntityManagerFactory emf = Persistence.createEntityManagerFactory("mypersisteneunit");
 	EntityManager em = emf.createEntityManager();
 
 	@Override
 	public StreamObserver<ManyProductRequest> sendManyProduct(StreamObserver<ManyProductResponse> responseObserver) {
-
+     	
 		StreamObserver<ManyProductRequest> requestObserver = new StreamObserver<ManyProductRequest>() {
-
-			String productNames = "";
-
-			@Override
+		
+     		String productNames = "";
+			
+     		@Override
 			public void onNext(ManyProductRequest value) {
 				persistToDb(value.getProduct().getId(),value.getProduct().getProductName(), value.getProduct().getPrice(),
 						value.getProduct().getDescription());
@@ -58,7 +55,7 @@ public class ProductService extends ProductServiceImplBase {
 
 			@Override
 			public void onError(Throwable t) {
-
+				
 			}
 
 			@Override
@@ -69,13 +66,11 @@ public class ProductService extends ProductServiceImplBase {
 		};
 
 		return requestObserver;
-
 	}
 
 	@Override
 	public void sendProductList(EmptyRequest request, StreamObserver<ProductList> responseObserver) {
 		try {
-		
 			List<ProductEntity> allProducts = findAllFromDb(em);
 			for (ProductEntity p : allProducts) {
 				ProductList response = ProductList.newBuilder().setProduct(Product.newBuilder()
@@ -92,7 +87,6 @@ public class ProductService extends ProductServiceImplBase {
 		} finally {
 			responseObserver.onCompleted();
 		}
-
 	}
 
 	@Override
@@ -103,12 +97,9 @@ public class ProductService extends ProductServiceImplBase {
 		Integer price = request.getProduct().getPrice();
 		String description = request.getProduct().getDescription();
 
-
 		persistToDb(id,product_name, price, description);
 
-
 		ProductResponse.Builder response = ProductResponse.newBuilder();
-
 		response.setResponseCode(0).setResponsemessage("SUCCESS");
 
 		responseObserver.onNext(response.build());
